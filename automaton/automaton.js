@@ -11,6 +11,7 @@ function Automaton(h, w, spawn, sick, divide, ttl, infect){
     this.ttl = ttl;
     this.infect = infect/100;
     this.grid = [];
+    this.neighGrid = [];
 }
 
 Automaton.prototype.getHeight = function(){
@@ -26,34 +27,44 @@ Automaton.prototype.getCell = function(x, y){
 };
 
 Automaton.prototype.getSurrounding = function(x, y){
-    var i, j, found = [], dx, dy;
-    for (i = -1; i < 2; i += 1) {
-        for (j = -1; j < 2; j += 1) {
-            dx = x + i;
-            dy = y + j;
-            if(!((i !== 0) && (j !== 0)) && dx >= 0 && dx < this.w && dy >= 0 && dy < this.h){
-                found.push(this.grid[dx][dy]);
-            }
-        }
-    }
-    return found;
+    return this.neighGrid[x][y];
 };
 
 Automaton.prototype.initialize = function(){
-    var i, j,
+    var i, j, k, l, found, dx, dy,
         grid = this.grid,
+        neighGrid = this.neighGrid,
         chance = this.spawn,
         width = this.w,
-        heigth = this.h;
+        height = this.h;
 
     for (i = 0; i < width; i += 1) {
         grid[i] = [];
-        for (j = 0; j < heigth; j += 1) {
+
+        for (j = 0; j < height; j += 1) {
             if(Math.random() < chance){
                 grid[i][j] = new HealthyCell(i, j, this);
             } else {
                 grid[i][j] = new EmptyCell(i, j);
             }
+        }
+    }
+
+    //TODO: Work with a grid that has tiles
+    for (i = 0; i < width; i += 1) {
+        neighGrid[i] = [];
+        for (j = 0; j < height; j += 1) {
+            found = [];
+            for (k = -1; k < 2; k += 1) {
+                for (l = -1; l < 2; l += 1) {
+                    dx = i + k;
+                    dy = j + l;
+                    if(!((k !== 0) && (l !== 0)) && dx >= 0 && dx < this.w && dy >= 0 && dy < this.h){
+                        found.push(grid[dx][dy]);
+                    }
+                }
+            }
+            this.neighGrid[i][j] = found;
         }
     }
 };
