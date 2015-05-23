@@ -1,0 +1,16 @@
+.container {
+    margin-top: 20px;
+}
+
+.input-group{
+    margin-bottom: 10px;
+}
+
+.grid{
+    margin: auto;
+}
+
+.cell {
+    width: 5px;
+    height: 5px;
+}
